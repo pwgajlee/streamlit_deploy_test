@@ -4,7 +4,8 @@ import pandas as pd
 from sklearn.tree import DecisionTreeRegressor
 
 #reading data file (csv)
-data = pd.read_csv(r'C:\Users\ghduf\venv\contributions_w.csv')
+url = 'https://raw.githubusercontent.com/pwgajlee/streamlit_deploy_test/main/contributions_w.csv'
+data = pd.read_csv(url, index_col=0)
 
 #formatting $ from string to float
 data['ConsolidatedContribution']=data['ConsolidatedContribution'].str.replace(',','')
