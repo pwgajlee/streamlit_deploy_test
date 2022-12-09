@@ -4,7 +4,7 @@ import pandas as pd
 import altair as alt
 from datetime import datetime
 from sklearn.tree import DecisionTreeRegressor
-from function_list import quarter_to_date, date_to_datetime, change_to_mil
+from function_list import quarter_to_date, date_to_datetime, change_to_mil, get_chart
 #from csv_file_read import data
 #print(data.head())
 #print(type(data))
@@ -108,45 +108,6 @@ data_table = data_table.transpose()
 
 #renaming columns of data table for graph
 data_graph_sliced.columns = ['Consolidated', 'Health Fund', 'Pension Plan']
-
-def get_chart(data):
-    hover = alt.selection_single(
-        fields=["Period"],
-        nearest=True,
-        on="mouseover",
-        empty="none",
-    )
-        
-    lines = (
-        alt.Chart(data, title="")
-        .mark_line()
-        .encode(
-            x="yearquarter(Period)",
-            y=alt.Y("Amount", axis=alt.Axis(format='$~s')),
-            color="Contribution",
-        )
-    )
-
-    # Draw points on the line, and highlight based on selection
-    points = lines.transform_filter(hover).mark_circle(size=65)
-
-    # Draw a rule at the location of the selection
-    tooltips = (
-        alt.Chart(data)
-        .mark_rule()
-        .encode(
-            x="yearquarter(Period)",
-            y="Amount",
-            opacity=alt.condition(hover, alt.value(0.3), alt.value(0)),
-            tooltip=[
-                alt.Tooltip("yearquarter(Period)", title="Period"),
-                alt.Tooltip("Amount($M)", title="Amount"),
-            ],
-        )
-        .add_selection(hover)
-    )
-
-    return lines + points + tooltips
 
 #altair interactive line graph
 data_clean_alt = data_clean_alt[data_clean_alt.Contribution.isin(symbols)]
