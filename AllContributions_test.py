@@ -4,7 +4,7 @@ import pandas as pd
 import altair as alt
 from datetime import datetime
 from sklearn.tree import DecisionTreeRegressor
-from function_list import quarter_to_date, date_to_datetime
+from function_list import quarter_to_date, date_to_datetime, change_to_mil
 #from csv_file_read import data
 #print(data.head())
 #print(type(data))
@@ -85,10 +85,6 @@ data_clean_alt = data_clean_alt[data_alt_high]
 #selection box to choose what to show
 all_symbols = data_clean_alt.Contribution.unique()
 symbols = st.multiselect("Choose Contribution to visualize", all_symbols, all_symbols[:3])
-
-#function to change amount to $0.0M
-def change_to_mil(x):
-    return '$' + (x/1000000).round(decimals=1).astype(str) + 'M'
 
 #change from quarter to date (20071 -> 1/1/2007), creating new column for tooltip to show $0.0M
 data_clean_alt['Period'] = data_clean_alt.apply(lambda row: quarter_to_date(row), axis=1)
