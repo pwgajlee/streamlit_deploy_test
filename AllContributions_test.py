@@ -14,11 +14,11 @@ from function_list import quarter_to_date, date_to_datetime
 ##make this into a function in the future
 if datetime.now().month < 4:
     n = 1
-if datetime.now().month < 7:
+elif datetime.now().month < 7:
     n = 2
-if datetime.now().month < 10:
+elif datetime.now().month < 10:
     n = 3
-if datetime.now().month < 13:
+elif datetime.now().month < 13:
     n = 4
     
 #setting current year for the date of viewing (this is used for slider range)
