@@ -23,20 +23,21 @@ def change_to_mil(data):
     return '$' + (data/1000000).round(decimals=1).astype(str) + 'M'
 
 #altair function to set graph parameters (AllContributions_test.py)
+
 def get_chart(data):
     hover = alt.selection_single(
-        fields=["date"],
+        fields=["Period"],
         nearest=True,
         on="mouseover",
         empty="none",
     )
-
+        
     lines = (
         alt.Chart(data, title="")
         .mark_line()
         .encode(
-            x="yearquarter(date)",
-            y="Amount",
+            x="yearquarter(Period)",
+            y=alt.Y("Amount", axis=alt.Axis(format='$~s')),
             color="Contribution",
         )
     )
@@ -49,14 +50,15 @@ def get_chart(data):
         alt.Chart(data)
         .mark_rule()
         .encode(
-            x="yearquarter(date)",
+            x="yearquarter(Period)",
             y="Amount",
             opacity=alt.condition(hover, alt.value(0.3), alt.value(0)),
             tooltip=[
-                alt.Tooltip("Quarter", title="Quarter"),
-                alt.Tooltip("Amount", title="Amount"),
+                alt.Tooltip("yearquarter(Period)", title="Period"),
+                alt.Tooltip("Amount($M)", title="Amount"),
             ],
         )
         .add_selection(hover)
     )
-    return (lines + points + tooltips).interactive()
+
+    return lines + points + tooltips
