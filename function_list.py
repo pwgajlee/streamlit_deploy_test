@@ -4,6 +4,44 @@ import pandas as pd
 import altair as alt
 from datetime import datetime
 
+#re-arrange table for decision tree model for PENSION contributions
+def data_expand_p(input_length: float, output_length: float, data: pd.DataFrame) -> pd.DataFrame:
+    
+    df = data.copy()
+    
+    i = 1
+    while i < input_length:
+        df[f'x_{i}'] = df['Pension Contributions'].shift(-i)
+        i = i + 1
+        
+    j = 0
+    while j < output_length:
+        df[f'y_{j}'] = df['Pension Contributions'].shift(-output_length-j)
+        j = j + 1
+        
+    df = df.dropna(axis=0)
+    
+    return df
+
+#re-arrange table for decision tree model for HEALTH contributions
+def data_expand_h(input_length: float, output_length: float, data: pd.DataFrame) -> pd.DataFrame:
+    
+    df = data.copy()
+    
+    i = 1
+    while i < input_length:
+        df[f'x_{i}'] = df['Health Contributions'].shift(-i)
+        i = i + 1
+        
+    j = 0
+    while j < output_length:
+        df[f'y_{j}'] = df['Health Contributions'].shift(-output_length-j)
+        j = j + 1
+        
+    df = df.dropna(axis=0)
+    
+    return df
+
 #change quarter to month to prepare data to graph quarters on x-axis (20071 -> 2/1/2007)
 def quarter_to_date(row):  
     if int(str(row['Quarter'])[-1])==1:
@@ -23,21 +61,20 @@ def change_to_mil(data):
     return '$' + (data/1000000).round(decimals=1).astype(str) + 'M'
 
 #altair function to set graph parameters (AllContributions_test.py)
-
 def get_chart(data):
     hover = alt.selection_single(
-        fields=["Period"],
+        fields=["date"],
         nearest=True,
         on="mouseover",
         empty="none",
     )
-        
+
     lines = (
         alt.Chart(data, title="")
         .mark_line()
         .encode(
-            x="yearquarter(Period)",
-            y=alt.Y("Amount", axis=alt.Axis(format='$~s')),
+            x="yearquarter(date)",
+            y="Amount",
             color="Contribution",
         )
     )
@@ -50,15 +87,14 @@ def get_chart(data):
         alt.Chart(data)
         .mark_rule()
         .encode(
-            x="yearquarter(Period)",
+            x="yearquarter(date)",
             y="Amount",
             opacity=alt.condition(hover, alt.value(0.3), alt.value(0)),
             tooltip=[
-                alt.Tooltip("yearquarter(Period)", title="Period"),
-                alt.Tooltip("Amount($M)", title="Amount"),
+                alt.Tooltip("Quarter", title="Quarter"),
+                alt.Tooltip("Amount", title="Amount"),
             ],
         )
         .add_selection(hover)
     )
-
-    return lines + points + tooltips
+    return (lines + points + tooltips).interactive()
