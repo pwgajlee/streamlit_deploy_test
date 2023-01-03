@@ -52,11 +52,11 @@ data_alt=pd.concat([data_alt, prediction])
 agg_functions = {'Consolidated Contributions': 'sum', 'Health Contributions': 'sum', 'Pension Contributions': 'sum'}
 data_clean_index = data.groupby(data['Quarter'], as_index=False).aggregate(agg_functions)
 data_clean = data.groupby(data['Quarter']).aggregate(agg_functions)
-data_clean=pd.concat([data_clean, dt_pred_g], axis=1)
-data_clean_index=pd.concat([data_clean_index, dt_pred_g_index], axis=1)
-
+data_clean=pd.concat([data_clean, dt_pred_g])
+data_clean_index=pd.concat([data_clean_index, dt_pred_g_index])
 data_clean_alt = data_alt.groupby(['Contribution','Quarter'], as_index=False).agg('sum')
 
+print(data_clean)
 ### DATA COMBINATION (ACTUAL + PREDICTION) IS COMPLETE! FIX CODES BELOW FOR INDEXING AND RANGING
 
 
@@ -97,6 +97,7 @@ data_clean_alt = data_clean_alt[['Contribution', 'Period', 'Quarter', 'Amount', 
 #data sliced to match slider values
 data_graph_sliced = data_clean[index_1:index_2]
 
+
 #create new dataframe just for table presentation using sliced data table
 data_table = data_graph_sliced.copy()
 
@@ -108,7 +109,7 @@ data_table = data_table.drop(columns=['Consolidated Contributions', 'Health Cont
 data_table = data_table.transpose()
 
 #renaming columns of data table for graph
-data_graph_sliced.columns = ['Consolidated', 'Health Fund', 'Pension Plan', 'Consolidated Prediction', 'Health Prediction', 'Pension Prediction']
+data_graph_sliced.columns = ['Consolidated', 'Health Fund', 'Pension Plan']
 
 def get_chart(data):
     hover = alt.selection_single(
