@@ -31,23 +31,24 @@ pred_year = []
 pred_month = []
 
 begin_year = datetime.now().year
-if n==4:
-    for i in range(0,2):
-        begin_year += 1
-        for j in range(1,13):
-            pred_q = int(f'{begin_year}')
-            pred_year.append(pred_q)
-    pred_year.append(int(f'{begin_year+1}'))
+m = datetime.now().month
 
+pred_m = m + 1
+while len(pred_month) <= 24:
+    if pred_m <= 12:
+        pred_month.append(pred_m)
+        pred_m += 1
+    else:
+        pred_m = 1
 
-begin_year = datetime.now().year
-if n==4:
-    for i in range(0,2):
-        begin_year += 1
-        for j in range(1,13):
-            pred_m = int(f'{j}')
-            pred_month.append(pred_m)
-    pred_month.append(1)
+while len(pred_year) <= 24:
+    for i in range(0,12-m):
+        pred_year.append(begin_year)
+    for i in range(0,12):
+        pred_year.append(begin_year+1)
+    for i in range(0,25-len(pred_year)):
+        pred_year.append(begin_year+2)
+            
 
 data_p = data.drop(columns=['Health Contributions','Consolidated Contributions'])
 data_p = data_expand_p(25, 25, data_p)
@@ -82,7 +83,7 @@ dt_h_pred = dt_h.predict(X_test_h)
 dt_p_pred_g = pd.DataFrame(dt_p_pred[34])
 dt_p_pred_g['Year']=pred_year
 dt_p_pred_g['Month']=pred_month
-dt_p_pred_g.columns=['Pension Prediction', 'Year', 'Month']
+dt_p_pred_g.columns=['Pension Contributions', 'Year', 'Month']
 pred_quarter =[]
 for i in dt_p_pred_g['Month']:
     if 0<i<4:
@@ -100,12 +101,12 @@ for i in dt_p_pred_g['Month']:
 dt_p_pred_g['Quarter1']=pred_quarter
 dt_p_pred_g['Quarter']=(dt_p_pred_g['Year'].astype(str)+dt_p_pred_g['Quarter1'].astype(str)).astype(int)
 dt_p_pred_g=dt_p_pred_g.drop(columns=['Year', 'Month', 'Quarter1'])
-dt_p_pred_g=dt_p_pred_g[['Quarter','Pension Prediction']]
+dt_p_pred_g=dt_p_pred_g[['Quarter','Pension Contributions']]
 
 dt_h_pred_g = pd.DataFrame(dt_h_pred[34])
 dt_h_pred_g['Year']=pred_year
 dt_h_pred_g['Month']=pred_month
-dt_h_pred_g.columns=['Health Prediction', 'Year', 'Month']
+dt_h_pred_g.columns=['Health Contributions', 'Year', 'Month']
 pred_quarter =[]
 for i in dt_h_pred_g['Month']:
     if 0<i<4:
@@ -123,22 +124,21 @@ for i in dt_h_pred_g['Month']:
 dt_h_pred_g['Quarter1']=pred_quarter
 dt_h_pred_g['Quarter']=(dt_h_pred_g['Year'].astype(str)+dt_h_pred_g['Quarter1'].astype(str)).astype(int)
 dt_h_pred_g=dt_h_pred_g.drop(columns=['Year', 'Month', 'Quarter1'])
-dt_h_pred_g=dt_h_pred_g[['Quarter','Health Prediction']]
+dt_h_pred_g=dt_h_pred_g[['Quarter','Health Contributions']]
 
 dt_c_pred_g = pd.DataFrame(dt_p_pred[34])
-dt_c_pred_g.columns=['Consolidated Prediction']
+dt_c_pred_g.columns=['Consolidated Contributions']
 dt_c_pred_g['Quarter']=dt_p_pred_g['Quarter']
-dt_c_pred_g['Consolidated Prediction']=dt_p_pred_g['Pension Prediction']+dt_h_pred_g['Health Prediction']
+dt_c_pred_g['Consolidated Contributions']=dt_p_pred_g['Pension Contributions']+dt_h_pred_g['Health Contributions']
 
-dt_pred_g = pd.concat([dt_p_pred_g, dt_h_pred_g['Health Prediction'], dt_c_pred_g['Consolidated Prediction']], axis=1)
-dt_pred_g_index = dt_pred_g.groupby(['Quarter']).agg('sum')
+dt_pred_g = pd.concat([dt_p_pred_g, dt_h_pred_g['Health Contributions'], dt_c_pred_g['Consolidated Contributions']], axis=1)
+dt_pred_g_index = dt_pred_g.groupby(['Quarter'], as_index=False).agg('sum')
 dt_pred_g = dt_pred_g.groupby(['Quarter']).agg('sum')
-
-
+print(dt_pred_g)
 
 
 dt_p_pred = pd.DataFrame(dt_p_pred[34])
-dt_p_pred['Pension Contributions'] = 'Pension Prediction'
+dt_p_pred['Pension Contributions'] = 'Pension Plan'
 dt_p_pred.columns = ['Amount', 'Contribution']
 dt_p_pred['Quarter']=''
 dt_p_pred['Year']=pred_year
@@ -146,7 +146,7 @@ dt_p_pred['Month']=pred_month
 dt_p_pred=dt_p_pred[['Contribution', 'Year', 'Month', 'Quarter', 'Amount']]
 
 dt_h_pred = pd.DataFrame(dt_h_pred[34])
-dt_h_pred['Health Contributions'] = 'Health Prediction'
+dt_h_pred['Health Contributions'] = 'Health Fund'
 dt_h_pred.columns = ['Amount', 'Contribution']
 dt_h_pred['Quarter']=''
 dt_h_pred['Year']=pred_year
@@ -157,7 +157,7 @@ prediction=[dt_p_pred, dt_h_pred]
 contrib_prediction=pd.concat(prediction)
 
 consolidated=contrib_prediction.groupby(['Year','Month'], as_index=False).agg('sum')
-consolidated['Contribution']='Consolidated Prediction'
+consolidated['Contribution']='Consolidated'
 consolidated=consolidated[['Contribution', 'Year', 'Month', 'Amount']]
 
 prediction=[dt_p_pred, dt_h_pred, consolidated]
@@ -182,4 +182,3 @@ contrib_prediction['Quarter']=(contrib_prediction['Year'].astype(str)+contrib_pr
 contrib_prediction=contrib_prediction.drop(columns=['Year', 'Month', 'Quarter1'])
 contrib_prediction=contrib_prediction[['Contribution','Quarter', 'Amount']]
 contrib_prediction=contrib_prediction.groupby(['Contribution', 'Quarter']).agg('sum')
-
