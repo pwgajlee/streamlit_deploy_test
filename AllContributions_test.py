@@ -5,7 +5,7 @@ import altair as alt
 from datetime import datetime
 from sklearn.tree import DecisionTreeRegressor
 from function_list import quarter_to_date, date_to_datetime
-from contrib_pred_model import data, dt_pred_g, dt_pred_g_index, contrib_prediction, last_quarter, last_year
+from contrib_pred_model import data, dt_pred_g, dt_pred_g_index, contrib_prediction, pred_month, pred_year
 
 #from csv_file_read import data
 #print(data.head())
@@ -56,8 +56,21 @@ data_clean=pd.concat([data_clean, dt_pred_g])
 data_clean_index=pd.concat([data_clean_index, dt_pred_g_index])
 data_clean_alt = data_alt.groupby(['Contribution','Quarter'], as_index=False).agg('sum')
 
-print(data_clean)
 ### DATA COMBINATION (ACTUAL + PREDICTION) IS COMPLETE! FIX CODES BELOW FOR INDEXING AND RANGING
+
+last_month = pred_month[-1]
+      
+if last_month < 4:
+    last_quarter = 1
+elif last_month < 7:
+    last_quarter = 2
+elif last_month < 10:
+    last_quarter = 3
+elif last_month < 13:
+    last_quarter = 4
+    
+    
+last_year = pred_year[-1]
 
 
 #find index for the slider values to be used to slice data table
