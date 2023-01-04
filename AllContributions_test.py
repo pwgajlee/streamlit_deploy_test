@@ -5,7 +5,7 @@ import altair as alt
 from datetime import datetime
 from sklearn.tree import DecisionTreeRegressor
 from function_list import quarter_to_date, date_to_datetime
-from contrib_pred_model import data, dt_pred_g, dt_pred_g_index, contrib_prediction
+from contrib_pred_model import data, dt_pred_g, dt_pred_g_index, contrib_prediction, last_quarter, last_year
 
 #from csv_file_read import data
 #print(data.head())
@@ -70,8 +70,11 @@ if values[1] < datetime.now().year:
 elif values[1] == datetime.now().year:
     range_2 = int(f'{values[1]}{n}')
     index_2 = data_clean_index.index[data_clean_index['Quarter']==range_2][0] + 1
-elif values[1] > datetime.now().year:
+elif values[1] == datetime.now().year+1:
     range_2 = int(f'{values[1]}{4}')
+    index_2 = data_clean_index.index[data_clean_index['Quarter']==range_2][0] + 1
+elif values[1] == last_year:
+    range_2 = int(f'{values[1]}{last_quarter}')
     index_2 = data_clean_index.index[data_clean_index['Quarter']==range_2][0] + 1
 
 data_alt_low = data_clean_alt['Quarter']>=range_1
