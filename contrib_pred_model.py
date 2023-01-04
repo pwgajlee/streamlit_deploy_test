@@ -29,6 +29,7 @@ elif datetime.now().month < 13:
     
 pred_year = []
 pred_month = []
+print(type(pred_month))
 
 begin_year = datetime.now().year
 m = datetime.now().month
@@ -40,6 +41,19 @@ while len(pred_month) <= 24:
         pred_m += 1
     else:
         pred_m = 1
+        
+last_month = pred_month[-1]
+      
+if last_month < 4:
+    last_quarter = 1
+elif last_month < 7:
+    last_quarter = 2
+elif last_month < 10:
+    last_quarter = 3
+elif last_month < 13:
+    last_quarter = 4
+
+print(last_quarter)
 
 while len(pred_year) <= 24:
     for i in range(0,12-m):
@@ -48,7 +62,9 @@ while len(pred_year) <= 24:
         pred_year.append(begin_year+1)
     for i in range(0,25-len(pred_year)):
         pred_year.append(begin_year+2)
-            
+
+last_year = pred_year[-1]
+print(last_year)
 
 data_p = data.drop(columns=['Health Contributions','Consolidated Contributions'])
 data_p = data_expand_p(25, 25, data_p)
