@@ -29,7 +29,6 @@ elif datetime.now().month < 13:
     
 pred_year = []
 pred_month = []
-print(type(pred_month))
 
 begin_year = datetime.now().year
 m = datetime.now().month
@@ -53,7 +52,7 @@ elif last_month < 10:
 elif last_month < 13:
     last_quarter = 4
 
-print(last_quarter)
+
 
 while len(pred_year) <= 24:
     for i in range(0,12-m):
@@ -64,7 +63,7 @@ while len(pred_year) <= 24:
         pred_year.append(begin_year+2)
 
 last_year = pred_year[-1]
-print(last_year)
+
 
 data_p = data.drop(columns=['Health Contributions','Consolidated Contributions'])
 data_p = data_expand_p(25, 25, data_p)
@@ -150,7 +149,7 @@ dt_c_pred_g['Consolidated Contributions']=dt_p_pred_g['Pension Contributions']+d
 dt_pred_g = pd.concat([dt_p_pred_g, dt_h_pred_g['Health Contributions'], dt_c_pred_g['Consolidated Contributions']], axis=1)
 dt_pred_g_index = dt_pred_g.groupby(['Quarter'], as_index=False).agg('sum')
 dt_pred_g = dt_pred_g.groupby(['Quarter']).agg('sum')
-print(dt_pred_g)
+
 
 
 dt_p_pred = pd.DataFrame(dt_p_pred[34])
