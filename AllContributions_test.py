@@ -179,3 +179,4 @@ st.altair_chart(
 #data table
 st.table(data_table)
 
+st.table(data_clean_alt)
