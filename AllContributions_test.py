@@ -90,6 +90,8 @@ elif values[1] == last_year:
     range_2 = int(f'{values[1]}{last_quarter}')
     index_2 = data_clean_index.index[data_clean_index['Quarter']==range_2][0] + 1
 
+st.write(range_1, index_1, range_2, index_2)    
+
 data_alt_low = data_clean_alt['Quarter']>=range_1
 data_alt_high = data_clean_alt['Quarter']<=range_2
 data_clean_alt = data_clean_alt[data_alt_low]
