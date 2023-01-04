@@ -57,8 +57,6 @@ data_clean_index=pd.concat([data_clean_index, dt_pred_g_index])
 data_clean_alt = data_alt.groupby(['Contribution','Quarter'], as_index=False).agg('sum')
 
 print(data_clean_index)
-data_clean_index.reset_index()
-print(data_clean_index)
 
 ### DATA COMBINATION (ACTUAL + PREDICTION) IS COMPLETE! FIX CODES BELOW FOR INDEXING AND RANGING
 
