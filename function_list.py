@@ -52,6 +52,17 @@ def quarter_to_date(row):
         return f'8/1/{str(row["Quarter"])[0:4]}'
     return f'11/1/{str(row["Quarter"])[0:4]}'
 
+#find quarter for a month
+def month_to_quarter(x):
+    if x < 4:
+        return 1
+    elif x < 7:
+        return 2
+    elif x < 10:
+        return 3
+    elif x < 13:
+        return 4
+
 #change date type from str to datetime
 def date_to_datetime(row):
     return datetime.strptime(row['date'], '%x')
